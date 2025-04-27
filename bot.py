@@ -5,6 +5,8 @@ import os
 # Получаем токен и ID канала из переменных окружения
 TOKEN = os.getenv("TOKEN")
 CHANNEL_ID = os.getenv("CHANNEL_ID")
+if not TOKEN or not CHANNEL_ID:
+    raise ValueError("TOKEN или CHANNEL_ID не установлены. Проверьте переменные окружения.")
 
 # Функция для генерации хэштегов
 def generate_hashtags(data):
