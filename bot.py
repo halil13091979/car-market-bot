@@ -1,5 +1,5 @@
 from telegram import Update, Bot
-from telegram.ext import Updater, CommandHandler, CallbackContext
+from telegram.ext import Application, CommandHandler, ContextTypes
 import os
 
 # Получаем токен и ID канала из переменных окружения
@@ -17,10 +17,10 @@ def generate_hashtags(data):
     return " ".join(hashtags)
 
 # Команда для добавления объявления
-def add(update: Update, context: CallbackContext):
+async def add(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     if not context.args:
-        update.message.reply_text("Пожалуйста, отправьте данные в формате: Марка, Модель, Год, Цена")
+        await update.message.reply_text("Пожалуйста, отправьте данные в формате: Марка, Модель, Год, Цена")
         return
 
     # Формируем текст объявления
@@ -32,19 +32,20 @@ def add(update: Update, context: CallbackContext):
 
     # Отправляем объявление в канал
     bot = Bot(TOKEN)
-    bot.send_message(chat_id=CHANNEL_ID, text=f"{ad_text}\n\n{hashtags}")
+    await bot.send_message(chat_id=CHANNEL_ID, text=f"{ad_text}\n\n{hashtags}")
 
-    update.message.reply_text("Ваше объявление успешно добавлено!")
+    await update.message.reply_text("Ваше объявление успешно добавлено!")
 
 # Основная функция
 def main():
-    updater = Updater(TOKEN)
-    dispatcher = updater.dispatcher
+    # Создаём приложение
+    application = Application.builder().token(TOKEN).build()
 
-    dispatcher.add_handler(CommandHandler("add", add))
+    # Добавляем обработчик команды /add
+    application.add_handler(CommandHandler("add", add))
 
-    updater.start_polling()
-    updater.idle()
+    # Запускаем бота
+    application.run_polling()
 
 if __name__ == "__main__":
     main()
