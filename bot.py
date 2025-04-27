@@ -1,8 +1,8 @@
 from flask import Flask
-from threading import Thread
 from telegram import Update, Bot
 from telegram.ext import Application, CommandHandler, ContextTypes
 import os
+import asyncio
 
 # Flask-приложение
 app = Flask(__name__)
@@ -42,17 +42,14 @@ async def add(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text("Ваше объявление успешно добавлено!")
 
-# Основная функция
-def run_bot():
+# Основная функция для запуска бота
+async def run_bot():
     application = Application.builder().token(TOKEN).build()
     application.add_handler(CommandHandler("add", add))
-    application.run_polling()
-
-# Запуск бота в отдельном потоке
-def start_bot():
-    thread = Thread(target=run_bot)
-    thread.start()
+    await application.run_polling()
 
 if __name__ == "__main__":
-    start_bot()
-    app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)))  # Запуск Flask-сервера
+    # Запускаем Flask и бота параллельно
+    loop = asyncio.get_event_loop()
+    loop.create_task(run_bot())
+    app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)))
