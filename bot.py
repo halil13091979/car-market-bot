@@ -1,20 +1,27 @@
+from flask import Flask
+from threading import Thread
 from telegram import Update, Bot
 from telegram.ext import Application, CommandHandler, ContextTypes
 import os
 
+# Flask-приложение
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "Бот работает!"
+
 # Получаем токен и ID канала из переменных окружения
 TOKEN = os.getenv("TOKEN")
 CHANNEL_ID = os.getenv("CHANNEL_ID")
-if not TOKEN or not CHANNEL_ID:
-    raise ValueError("TOKEN или CHANNEL_ID не установлены. Проверьте переменные окружения.")
 
 # Функция для генерации хэштегов
 def generate_hashtags(data):
     hashtags = []
     for word in data.split():
-        if word.isdigit():  # Если это число (например, год или цена)
+        if word.isdigit():
             hashtags.append(f"#{word}")
-        else:  # Если это текст (например, марка или модель)
+        else:
             hashtags.append(f"#{word.capitalize()}")
     return " ".join(hashtags)
 
@@ -25,29 +32,27 @@ async def add(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("Пожалуйста, отправьте данные в формате: Марка, Модель, Год, Цена")
         return
 
-    # Формируем текст объявления
     ad_text = f"🚗 Новое объявление от @{user.username or user.first_name}:\n" \
               f"{' '.join(context.args)}"
 
-    # Генерируем хэштеги
     hashtags = generate_hashtags(' '.join(context.args))
 
-    # Отправляем объявление в канал
     bot = Bot(TOKEN)
     await bot.send_message(chat_id=CHANNEL_ID, text=f"{ad_text}\n\n{hashtags}")
 
     await update.message.reply_text("Ваше объявление успешно добавлено!")
 
 # Основная функция
-def main():
-    # Создаём приложение
+def run_bot():
     application = Application.builder().token(TOKEN).build()
-
-    # Добавляем обработчик команды /add
     application.add_handler(CommandHandler("add", add))
-
-    # Запускаем бота
     application.run_polling()
 
+# Запуск бота в отдельном потоке
+def start_bot():
+    thread = Thread(target=run_bot)
+    thread.start()
+
 if __name__ == "__main__":
-    main()
+    start_bot()
+    app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)))  # Запуск Flask-сервера
