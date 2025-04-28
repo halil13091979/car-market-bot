@@ -1,7 +1,6 @@
 import logging
-from flask import Flask, request, render_template
-from telegram import Bot, Update
-from telegram.ext import Application, CommandHandler, ContextTypes
+from flask import Flask, request
+from telegram import Bot
 import os
 import asyncio
 
@@ -16,7 +15,7 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 
 # Telegram настройки
-TOKEN = "Ваш_токен_бота"
+TOKEN = "Ваш_токен_бота"  # Замените на ваш токен
 CHANNEL_ID = -362309632
 
 # Хранилище объявлений (в памяти)
@@ -25,7 +24,33 @@ ads_storage = []
 @app.route('/')
 def home():
     """Главная страница с интерфейсом"""
-    return render_template('index.html', ads=ads_storage)
+    html_content = """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Car Market Bot</title>
+    </head>
+    <body>
+        <h1>Car Market Bot</h1>
+        <h2>Добавить объявление:</h2>
+        <form method="POST" action="/add_ad">
+            <textarea name="data" rows="4" cols="50" placeholder="Введите данные объявления"></textarea>
+            <br>
+            <button type="submit">Добавить</button>
+        </form>
+        <h2>Отправленные объявления:</h2>
+        <ul>
+    """
+    for ad in ads_storage:
+        html_content += f"<li>{ad}</li>"
+    html_content += """
+        </ul>
+    </body>
+    </html>
+    """
+    return html_content
 
 @app.route('/add_ad', methods=['POST'])
 def add_ad():
@@ -60,15 +85,6 @@ def generate_hashtags(data):
             hashtags.append(f"#{word.capitalize()}")
     return " ".join(hashtags)
 
-async def run_bot():
-    """Запуск Telegram-бота"""
-    logger.info("Запуск телеграм-бота")
-    application = Application.builder().token(TOKEN).build()
-    application.add_handler(CommandHandler("add", add))  # Оставляем обработку команды /add
-    await application.run_polling()
-
 if __name__ == "__main__":
-    logger.info("Запуск Flask-приложения и бота")
-    loop = asyncio.get_event_loop()
-    loop.create_task(run_bot())
+    logger.info("Запуск Flask-приложения")
     app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)))
