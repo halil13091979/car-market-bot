@@ -12,8 +12,8 @@ def home():
     return "Бот работает!"
 
 # Получаем токен и ID канала из переменных окружения
-TOKEN = os.getenv("TOKEN")
-CHANNEL_ID = os.getenv("CHANNEL_ID")
+TOKEN = 7807736400:AAFCb_0m79n603AmL6Q9UDtIBxQ0m2m2rCc
+CHANNEL_ID = -362309632
 
 # Функция для генерации хэштегов
 def generate_hashtags(data):
