@@ -20,11 +20,9 @@ def home():
     logger.info("Главная страница Flask была вызвана")
     return "Бот работает!"
 
-# Правильный формат токена
 TOKEN = "7955544992:AAGZa_9Hd2REbYExKe9gZIHl_fP96-joeU0"
-CHANNEL_ID = -362309632  # ID канала должен быть числом
+CHANNEL_ID = -362309632
 
-# Функция для генерации хэштегов
 def generate_hashtags(data):
     logger.info("Генерация хэштегов для данных: %s", data)
     hashtags = []
@@ -34,12 +32,7 @@ def generate_hashtags(data):
         else:
             hashtags.append(f"#{word.capitalize()}")
     return " ".join(hashtags)
-    from telegram.ext import Application
 
-application = Application.builder().token(TOKEN).build()
-application.settings["debug"] = True  # Включение режима отладки
-
-# Команда для добавления объявления
 async def add(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     logger.info("Команда /add вызвана пользователем: %s", user.username or user.first_name)
@@ -62,7 +55,6 @@ async def add(update: Update, context: ContextTypes.DEFAULT_TYPE):
         logger.error("Ошибка при отправке сообщения: %s", e)
         await update.message.reply_text("Произошла ошибка при добавлении объявления.")
 
-# Основная функция для запуска бота
 async def run_bot():
     logger.info("Запуск телеграм-бота")
     application = Application.builder().token(TOKEN).build()
@@ -70,7 +62,6 @@ async def run_bot():
     await application.run_polling()
 
 if __name__ == "__main__":
-    # Запускаем Flask и бота параллельно
     logger.info("Запуск Flask-приложения и бота")
     loop = asyncio.get_event_loop()
     loop.create_task(run_bot())
