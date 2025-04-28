@@ -34,6 +34,10 @@ def generate_hashtags(data):
         else:
             hashtags.append(f"#{word.capitalize()}")
     return " ".join(hashtags)
+    from telegram.ext import Application
+
+application = Application.builder().token(TOKEN).build()
+application.settings["debug"] = True  # Включение режима отладки
 
 # Команда для добавления объявления
 async def add(update: Update, context: ContextTypes.DEFAULT_TYPE):
