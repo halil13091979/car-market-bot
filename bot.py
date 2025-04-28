@@ -11,9 +11,9 @@ app = Flask(__name__)
 def home():
     return "Бот работает!"
 
-# Получаем токен и ID канала из переменных окружения
-TOKEN = 7807736400:AAFCb_0m79n603AmL6Q9UDtIBxQ0m2m2rCc
-CHANNEL_ID = -362309632
+# Правильный формат токена
+TOKEN = "7807736400:AAFCb_0m79n603AmL6Q9UDtIBxQ0m2m2rCc"
+CHANNEL_ID = -362309632  # ID канала должен быть числом
 
 # Функция для генерации хэштегов
 def generate_hashtags(data):
