@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 
 # Telegram настройки
-TOKEN = "Ваш_токен_бота"  # Замените на ваш токен
+TOKEN = "7807736400:AAFCb_0m79n603AmL6Q9UDtIBxQ0m2m2rCc"
 CHANNEL_ID = "-1002630184427"
 # Хранилище объявлений (в памяти)
 ads_storage = []
