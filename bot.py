@@ -10,6 +10,7 @@ app = Flask(__name__)
 @app.route('/')
 def home():
     return "Бот работает!"
+    
 
 # Правильный формат токена
 TOKEN = "7807736400:AAFCb_0m79n603AmL6Q9UDtIBxQ0m2m2rCc"
