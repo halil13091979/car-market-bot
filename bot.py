@@ -21,7 +21,7 @@ def home():
     return "Бот работает!"
 
 # Правильный формат токена
-TOKEN = "7807736400:AAFCb_0m79n603AmL6Q9UDtIBxQ0m2m2rCc"
+TOKEN = "7955544992:AAGZa_9Hd2REbYExKe9gZIHl_fP96-joeU0"
 CHANNEL_ID = -362309632  # ID канала должен быть числом
 
 # Функция для генерации хэштегов
